@@ -1,17 +1,32 @@
 # Objectives
 
+- Based on which investor invested in earlier financing rounds (e.g. angel, A), can we predict the probability of securing future financing?
+
 - As an investor, what is the optimal network structure for investing in startups?
 - For start-ups, did the investor's network significantly impact the liklihood of success?
 
 # Exploratory Data Analysis
 
-_By year: Total Rows | Unique Company Rounds |_
-- 2012: 8773 | 2959
-- 2011: 8259 | 2727
-- 2010: 6295 | 2160
-- 2009: 4710 | 1708
-- 2008: 4937 | 1892
-- 2007: 4781 | 1813
-- 2006: 3867 | 1411
-- 2005: 2990 | 992
-- 2004: 411 | 164
+_Funding types_
+- venture: 24,264
+- seed: 17,116
+- undisclosed: 3,810
+- angel: 2,508
+- debt_financing: 1,328
+- private_equity: 1,260
+- grant: 922
+- convertible_note: 766
+- equity_crowd_funding: 255
+- non_equity_assistance: 122
+- post_ipo_equity: 90
+- secondary_market: 73
+- post_ipo_debt: ?
+- product_crowdfunding: ?
+
+# Prediction: Can investors predict future funding rounds?
+
+_Steps:_
+- Company list with series A funding
+- Target column with value 0 to X depending on how many future rounds
+- Feature matrix all investors that invest past series A as columns. 1's or 0's. (angel, series-a, series-b, series-c+, 'private-equity', 'post-ipo')
+- Holdout 30% of data
