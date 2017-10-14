@@ -9,9 +9,22 @@
 
 _Funding types_
 - venture: 24,264
+    - A: 11,663
+    - B: 7,197
+    - C: 3,753
+    - D: 1,685
+    - E: 641
+    - F: 228
+    - G: ?
+    - H: ?
 - seed: 17,116
+    - A: 85
+    - B: 6
+    - C: 3
 - undisclosed: 3,810
 - angel: 2,508
+    - A: 13
+    - B: 
 - debt_financing: 1,328
 - private_equity: 1,260
 - grant: 922
