@@ -72,3 +72,17 @@ _Steps:_
 - Target column with value 0 to X depending on how many future rounds
 - Feature matrix all investors that invest past series A as columns. 1's or 0's. (angel, series-a, series-b, series-c+, 'private-equity', 'post-ipo')
 - Holdout 30% of data
+
+# Model results | Companies
+- (0,10):     0.59 | 22,815
+- (11,50):    0.65 | 20,268
+- (51,200):   0.68 | 18,097
+- (201,400):  0.73 | 7,364
+- (401,700):  0.71 | 3,547
+- (700,1050): 0.55 | 4,928
+
+# Potential Risks
+- Unbalanced classes (more multiple financing round companies than not approx 60/40)
+
+# To do:
+- Create holdout dataset
