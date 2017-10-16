@@ -54,8 +54,11 @@ def optimized_multiple_rounds_prob(df, low, high):
 if __name__ == "__main__":
     df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
     df.head()
-    arr = df['company_city'].unique()
-    arr[0:100]
+    df['funded_at'].sort_values()
+    arr = df['company_country_code'].unique()
+    arr
+
+
     #Baseline model
     # bucket_dict = {0:(0,10), 1:(11,50), 2:(51,200), 3:(201,400), 4:(401,700), 5:(700,1050)}
     # for key in bucket_dict.iterkeys():

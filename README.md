@@ -1,11 +1,9 @@
 # Objectives
 
-- Can we predict if you'll get further rounds of financing based on size of your seed investor?
+- Identify the most influential VC companies
+- Validate that companies associated with the most influential VC companies are more likely to receive more funding
+- Conclusion: We'll have an ordered list of who you most want money from if you're a start-up.
 
-- Based on which investor invested in earlier financing rounds (e.g. angel, A), can we predict the probability of securing future financing?
-
-- As an investor, what is the optimal network structure for investing in startups?
-- For start-ups, did the investor's network significantly impact the liklihood of success?
 
 # Exploratory Data Analysis
 
@@ -86,3 +84,23 @@ _Steps:_
 
 # To do:
 - Create holdout dataset
+
+# Reading Notes:
+- Informal Networks
+- Amplification / Feedback loops
+- Middle-class networkers
+- Adjacency-list {A: {B:2, D:5, E:5}}
+- Snowball sampling
+- Centrality
+    - Degree Centrality: Celebrities
+    - Closeness Centrality: Gossip Mongers
+    - Betweenness Centrality: Boundary spanners
+    - Eigenvector centrality: Gray cardinals
+- Subcomponents: Most active network
+- Ego Networks: Reach of information
+    - Clustering coefficient: Mutual trust within ego network
+- Forbidden triads: Arbitrage opportunities/structural holes
+- Hierarchical Clustering   
+    - graph distance
+    - similarity
+- Affiliation networks
