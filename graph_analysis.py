@@ -8,29 +8,48 @@ pd.set_option('display.max_rows', 1000)
 df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
 df['funded_year'] = df['funded_at'].apply(lambda x: x[0:4])
 
-# By year: Aggregated Node list (unique investors and companies)
-company_list = list(df['company_name'].unique())
-investor_list = list(df['investor_name'].unique())
+# Function for  nodal graph
+def node_and_edges(df):
+    """
+    Function to create nodal graph object.
 
-# By year: Edge list
-edge_df = df[['company_name', 'funding_round_type', 'investor_name', 'raised_amount_usd']].sort_values(by='company_name')
-edge_list = []
-for i in range(len(edge_df)):
-    edge_list.append((edge_df['investor_name'].values[i], edge_df['company_name'].values[i]))
+    Input: Dataframe
+    Output: Graph object
+    """
+    company_list = list(df['company_name'].unique())
+    investor_list = list(df['investor_name'].unique())
+    edge_df = df[['company_name', 'funding_round_type', 'investor_name', 'raised_amount_usd']].sort_values(by='company_name')
+    edge_list = []
 
+    for i in range(len(edge_df)):
+        edge_list.append((edge_df['investor_name'].values[i], edge_df['company_name'].values[i]))
 
-G = nx.Graph()
-G.add_nodes_from(investor_list, color='red', size=50)
-G.add_nodes_from(company_list, color='blue', size=50)
-G.add_edges_from(edge_list)
+    G = nx.Graph()
+    G.add_nodes_from(investor_list, color='red', size=50)
+    G.add_nodes_from(company_list, color='blue', size=50)
+    G.add_edges_from(edge_list)
+    return G
+
+G = node_and_edges(df)
 
 
 # Functions used in centrality calculations
 def sorted_map(map):
+    """
+    Sort map object. For example, list of degrees from Graph object is return as a map.
+    Input: map
+    Output: sorted map
+    """
     ms = sorted(map.iteritems(), key=lambda (k,v): (-v,k))
     return ms
 
 def trim_degrees(g, degree=15):
+    """
+    Trim graph object based on minimum number of degrees per node.
+
+    Input: graph object, and minimum number of degrees per node_list
+    Output: trimmed graph object
+    """
     g2 = g.copy()
     d = nx.degree(g2)
     for n in g2.nodes():
@@ -54,7 +73,6 @@ core = trim_degrees(G)
 cent = nx.closeness_centrality(core)
 cs = sorted_map(cent)
 
-
 # h=plt.hist(cent.values(), bins=20)
 # plt.loglog(h[1][1:],h[0])
 # plt.show()
@@ -68,10 +86,10 @@ eig = nx.eigenvector_centrality_numpy(core)
 es = sorted_map(eig)
 
 # Most influential VC's
-degree_names = [x[0] for x in ds[0:50]]
-close_names = [x[0] for x in cs[0:200]]
-bet_names = [x[0] for x in bs[0:200]]
-eig_names = [x[0] for x in es[0:200]]
+degree_names = [x[0] for x in ds[0:250]]
+close_names = [x[0] for x in cs[0:250]]
+bet_names = [x[0] for x in bs[0:250]]
+eig_names = [x[0] for x in es[0:250]]
 
 union_names = list(set(degree_names) | set(close_names) | set(bet_names))
 
@@ -116,18 +134,15 @@ def mrounds_rate(df, company_rounds_list, invest_dict):
 
 mround_rate = mrounds_rate(df_2, freq_list, invest_dict)
 df_influence['mrounds_rate'] = mround_rate
-df_influence.head(50)
+df_influence[(df_influence['type'] == 1)].reset_index()
 
 def mrounds_hist(df):
     X = []
-    for x in xrange(90):
+    for x in xrange(218):
         X.append(df.iloc[x]['mrounds_rate'])
     return X
 
 df_investors_only = df_influence[(df_influence['type'] == 1)].reset_index()
-df_investors_only.head(100)
-# df_investors_only.iloc[0]['mrounds_rate']
 X = mrounds_hist(df_investors_only)
-
 plt.plot(X)
 plt.show()
