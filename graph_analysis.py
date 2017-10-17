@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import networkx as nx
-from collections import Counter
+from collections import Counter, defaultdict
 
 
 df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
@@ -81,18 +81,21 @@ union_names = list(set(degree_names) | set(close_names) | set(bet_names))
 influence_table = [[name, deg[name], cent[name], bet[name], eig[name]] for name in union_names]
 influence_table = sorted(influence_table, key=lambda x: x[2], reverse=True)
 
-
 # Histogram for 2009, most influential versus middle-of-the-pack
 df_influence = pd.DataFrame(
     influence_table, columns=['company_name', 'degree_centrality',
     'closeness_centrality', 'betweenness_centrality', 'eigenvector_centrality'])
 df_influence['influence_rank'] = [x/20 for x in df_influence.index]
-
+df_influence.head()
 
 df_2 = df.copy().fillna(value=1)
-df_2_grouped = df_2[['company_name', 'funding_round_type', 'funding_round_code']].groupby(
+df_company_rounds = df_2[['company_name', 'funding_round_type', 'funding_round_code']].groupby(
 ['company_name', 'funding_round_type', 'funding_round_code']).count()
 
 
-company_rounds_list = [x for x in df_2_grouped.index]
-freq_list = Counter(x[0] for x in company_rounds_list)
+company_rounds_list = [x for x in df_company_rounds.index]
+freq_list = Counter(x[0] for x in company_rounds_list) # Company: # of Rounds
+
+invest_dict = defaultdict(set)
+for investor in df_influence['company_name']:
+    invest_dict[investor] = set(df_2[(df_2['investor_name']==investor)]['company_name'])
