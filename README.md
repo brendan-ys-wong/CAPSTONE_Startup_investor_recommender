@@ -1,11 +1,14 @@
+# Summary
+This repository is a current work-in-progress. The aim is the to use graph theory and machine learning techniques to analyze a database of venture capital investors and the underlying network effects that influence start-up success.
+
 # Objectives
 
-- Identify the most influential VC companies
-- Validate that companies associated with the most influential VC companies are more likely to receive more funding
-- Conclusion: We'll have an ordered list of who you most want money from if you're a start-up.
+- Identify the most influential VC companies based on network centrality measures
+- Statistically validate that companies associated with the most influential VC companies are more likely to receive funding rounds
 
 
 # Exploratory Data Analysis
+Statistics from exploring the data set
 
 _Funding types_
 - venture: 24,264
@@ -63,15 +66,8 @@ _Investors by seed count_
 - At least 800: 6
 
 
-# Prediction: Can investors predict future funding rounds?
-
-_Steps:_
-- Company list with series A funding
-- Target column with value 0 to X depending on how many future rounds
-- Feature matrix all investors that invest past series A as columns. 1's or 0's. (angel, series-a, series-b, series-c+, 'private-equity', 'post-ipo')
-- Holdout 30% of data
-
 # Model results | Companies
+Average rate of companies receiving multiple rounds of financing based on seed investor size
 - (0,10):     0.59 | 22,815
 - (11,50):    0.65 | 20,268
 - (51,200):   0.68 | 18,097
@@ -81,9 +77,6 @@ _Steps:_
 
 # Potential Risks
 - Unbalanced classes (more multiple financing round companies than not approx 60/40)
-
-# To do:
-- Create holdout dataset
 
 # Reading Notes:
 - Informal Networks
