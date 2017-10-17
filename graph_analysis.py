@@ -1,7 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import networkx as nx
-from prettytable import PrettyTable
+from collections import Counter
+
 
 df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
 df['funded_year'] = df['funded_at'].apply(lambda x: x[0:4])
@@ -29,7 +30,7 @@ def sorted_map(map):
     ms = sorted(map.iteritems(), key=lambda (k,v): (-v,k))
     return ms
 
-def trim_degrees(g, degree=50):
+def trim_degrees(g, degree=15):
     g2 = g.copy()
     d = nx.degree(g2)
     for n in g2.nodes():
@@ -53,7 +54,7 @@ core = trim_degrees(G)
 # Closeness Centrality
 cent = nx.closeness_centrality(core)
 cs = sorted_map(cent)
-cs[:10]
+cs[:200]
 
 # h=plt.hist(cent.values(), bins=20)
 # plt.loglog(h[1][1:],h[0])
@@ -62,25 +63,47 @@ cs[:10]
 # Betweeness Centrality
 bet = nx.betweenness_centrality(core)
 bs = sorted_map(bet)
-bs[0:10]
+bs[0:200]
 
 # Eigenvector Centrality
-eig = nx.eigenvector_centrality(core)
+eig = nx.eigenvector_centrality_numpy(core)
 es = sorted_map(eig)
-es[0:10]
+es[0:200]
 
 # Most influential VC's
-degree_names = [x[0] for x in ds[0:10]]
-close_names = [x[0] for x in cs[0:10]]
-bet_names = [x[0] for x in bs[0:10]]
-eig_names = [x[0] for x in es[0:10]]
+degree_names = [x[0] for x in ds[0:50]]
+close_names = [x[0] for x in cs[0:200]]
+bet_names = [x[0] for x in bs[0:200]]
+eig_names = [x[0] for x in es[0:200]]
 
 union_names = list(set(degree_names) | set(close_names) | set(bet_names))
 
 influence_table = [[name, deg[name], cent[name], bet[name], eig[name]] for name in union_names]
-sorted(influence_table, key=lambda x: x[2])
+influence_table = sorted(influence_table, key=lambda x: x[2], reverse=True)
+
+
+
 
 
 # Histogram for 2009, most influential versus middle-of-the-pack
+df_influence = pd.DataFrame(
+    influence_table, columns=['company_name', 'degree_centrality',
+    'closeness_centrality', 'betweenness_centrality', 'eigenvector_centrality'])
 
-df_ht = df.copy()
+df_influence['influence_rank'] = [x/20 for x in df_influence.index]
+df_influence.head()
+
+df_2 = df.copy()
+df_2.head()
+
+df_2_grouped = df_2[['company_name', 'funding_round_type', 'funding_round_code']].groupby(['company_name', 'funding_round_type', 'funding_round_code']).count()
+df_2[(df_2['company_name'] == 'Delivery Hero')]
+company_rounds_list = [x for x in df_2_grouped.index]
+company_rounds_list
+freq_list = Counter(x[0] for x in company_rounds_list)
+print freq_list
+
+adj_core = nx.adjacency_matrix(core)
+adj_core = nx.to_dict_of_dicts(core)
+
+print adj_core
