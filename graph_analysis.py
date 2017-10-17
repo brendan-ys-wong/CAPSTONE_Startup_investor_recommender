@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 from collections import Counter, defaultdict
 
-
+pd.set_option('display.max_rows', 1000)
 df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
 df['funded_year'] = df['funded_at'].apply(lambda x: x[0:4])
 
@@ -42,7 +42,6 @@ def trim_degrees(g, degree=15):
 # Degree Centrality
 deg = nx.degree(G)
 ds = sorted_map(deg)
-ds[0:10]
 
 # h=plt.hist(deg.values(), 1)
 # plt.loglog(h[1][1:],h[0])
@@ -54,7 +53,7 @@ core = trim_degrees(G)
 # Closeness Centrality
 cent = nx.closeness_centrality(core)
 cs = sorted_map(cent)
-cs[:200]
+
 
 # h=plt.hist(cent.values(), bins=20)
 # plt.loglog(h[1][1:],h[0])
@@ -63,12 +62,10 @@ cs[:200]
 # Betweeness Centrality
 bet = nx.betweenness_centrality(core)
 bs = sorted_map(bet)
-bs[0:200]
 
 # Eigenvector Centrality
 eig = nx.eigenvector_centrality_numpy(core)
 es = sorted_map(eig)
-es[0:200]
 
 # Most influential VC's
 degree_names = [x[0] for x in ds[0:50]]
@@ -86,7 +83,7 @@ df_influence = pd.DataFrame(
     influence_table, columns=['company_name', 'degree_centrality',
     'closeness_centrality', 'betweenness_centrality', 'eigenvector_centrality'])
 df_influence['influence_rank'] = [x/20 for x in df_influence.index]
-df_influence.head()
+
 
 df_2 = df.copy().fillna(value=1)
 df_company_rounds = df_2[['company_name', 'funding_round_type', 'funding_round_code']].groupby(
@@ -99,3 +96,21 @@ freq_list = Counter(x[0] for x in company_rounds_list) # Company: # of Rounds
 invest_dict = defaultdict(set)
 for investor in df_influence['company_name']:
     invest_dict[investor] = set(df_2[(df_2['investor_name']==investor)]['company_name'])
+
+def mrounds_rate(df, company_rounds_list, invest_dict):
+    mrounds_rate = []
+    for investor in df_influence['company_name']:
+        mrounds_counter = 0
+        company_set = invest_dict[investor]
+        for company in company_set:
+            nrounds = company_rounds_list[company]
+            if nrounds > 1:
+                mrounds_counter += 1
+        try:
+            mrounds_rate.append(float(mrounds_counter)/float(len(company_set)))
+        except ZeroDivisionError:
+            mrounds_rate.append(0)
+    return mrounds_rate
+
+mround_rate = mrounds_rate(df_2, freq_list, invest_dict)
+mround_rate
