@@ -79,3 +79,8 @@ union_names = list(set(degree_names) | set(close_names) | set(bet_names))
 
 influence_table = [[name, deg[name], cent[name], bet[name], eig[name]] for name in union_names]
 sorted(influence_table, key=lambda x: x[2])
+
+
+# Histogram for 2009, most influential versus middle-of-the-pack
+
+df_ht = df.copy()
