@@ -82,28 +82,17 @@ influence_table = [[name, deg[name], cent[name], bet[name], eig[name]] for name 
 influence_table = sorted(influence_table, key=lambda x: x[2], reverse=True)
 
 
-
-
-
 # Histogram for 2009, most influential versus middle-of-the-pack
 df_influence = pd.DataFrame(
     influence_table, columns=['company_name', 'degree_centrality',
     'closeness_centrality', 'betweenness_centrality', 'eigenvector_centrality'])
-
 df_influence['influence_rank'] = [x/20 for x in df_influence.index]
-df_influence.head()
 
-df_2 = df.copy()
-df_2.head()
 
-df_2_grouped = df_2[['company_name', 'funding_round_type', 'funding_round_code']].groupby(['company_name', 'funding_round_type', 'funding_round_code']).count()
-df_2[(df_2['company_name'] == 'Delivery Hero')]
+df_2 = df.copy().fillna(value=1)
+df_2_grouped = df_2[['company_name', 'funding_round_type', 'funding_round_code']].groupby(
+['company_name', 'funding_round_type', 'funding_round_code']).count()
+
+
 company_rounds_list = [x for x in df_2_grouped.index]
-company_rounds_list
 freq_list = Counter(x[0] for x in company_rounds_list)
-print freq_list
-
-adj_core = nx.adjacency_matrix(core)
-adj_core = nx.to_dict_of_dicts(core)
-
-print adj_core
