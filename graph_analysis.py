@@ -57,6 +57,34 @@ def trim_degrees(g, degree=15):
             g2.remove_node(n)
     return g2
 
+def influence_table(graph):
+    """
+    Calculates centrality metrics and produced sorted influence table.
+    Inputs: dataframe, graph object
+    Outputs: centrality maps and influence table
+    """
+
+    core = trim_degrees(G)
+    deg = nx.degree(core) # Degree centrality
+    ds = sorted_map(deg)
+    cent = nx.closeness_centrality(core) # Closeness centrality
+    cs = sorted_map(cent)
+    bet = nx.betweenness_centrality(core) #Betweenness centrality
+    bs = sorted_map(bet)
+    eig = nx.eigenvector_centrality_numpy(core) #Eigenvector centrality
+    es = sorted_map(eig)
+
+    degree_names = [x[0] for x in ds[0:250]]
+    close_names = [x[0] for x in cs[0:250]]
+    bet_names = [x[0] for x in bs[0:250]]
+    eig_names = [x[0] for x in es[0:250]]
+
+    union_names = list(set(degree_names) | set(close_names) | set(bet_names))
+    influence_table = [[name, deg[name], cent[name], bet[name], eig[name]] for name in union_names]
+    influence_table = sorted(influence_table, key=lambda x: x[2], reverse=True)
+
+    return influence_table
+
 
 # Degree Centrality
 deg = nx.degree(G)
