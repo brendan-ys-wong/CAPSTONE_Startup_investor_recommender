@@ -32,13 +32,13 @@ def node_and_edges(df):
     return G
 
 # Functions used in centrality calculations
-def sorted_map(map):
+def sorted_map(G):
     """
     Sort map object. For example, list of degrees from Graph object is return as a map.
     Input: map
     Output: sorted map
     """
-    ms = sorted(map.iteritems(), key=lambda (k,v): (-v,k))
+    ms = sorted(G.iteritems(), key=lambda (k,v): (-v,k))
     return ms
 
 def trim_degrees(g, degree=15):
@@ -50,8 +50,7 @@ def trim_degrees(g, degree=15):
     """
     g2 = g.copy()
     d = nx.degree(g2)
-    loop_range = list(g2.nodes())
-    for n in loop_range:
+    for n in g2.nodes():
         if d[n] <= degree:
             g2.remove_node(n)
     return g2

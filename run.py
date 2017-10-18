@@ -9,8 +9,8 @@ from analysis_functions import *
 
 pd.set_option('display.max_rows', 1000)
 
-# df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
-df = pd.read_csv('/home/ubuntu/Capstone/crunchbase-data/investments.csv') # For EC2
+df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
+# df = pd.read_csv('/home/ubuntu/Capstone/crunchbase-data/investments.csv') # For EC2
 
 df = df_preprocessing(df)
 
@@ -22,6 +22,13 @@ df = df_preprocessing(df)
 # plt.show()
 
 G = node_and_edges(df)
+# d = nx.degree(G)
+# d = sorted(d, key=[reverse])
+# d.keys
+# for k,v in d:
+#     print k, v
+#     break
+
 df_influence = influence_df(df, G)
 # df_influence.head()
 
