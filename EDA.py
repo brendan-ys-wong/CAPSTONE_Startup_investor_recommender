@@ -29,19 +29,19 @@ if __name__ == "__main__":
     ### Oct 2013 dataset
     # df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-october-2013/crunchbase-investments.csv')
 
-    ### Dec 2015 dataset
-    # df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
-    # df['funded_year'] = df['funded_at'].apply(lambda x: x[0:4])
+    ## Dec 2015 dataset
+    df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
+    df['funded_year'] = df['funded_at'].apply(lambda x: x[0:4])
 
-    ### By year statistics:
-    ## Set the year:
-    # df_year = df[(df['funded_year'] == '2015')]
+    ## By year statistics:
+    # Set the year:
+    df_year = df[(df['funded_year'] == '2015')]
 
     ## By year: Company, Funding Round Type, Investor Amt Raised
     # df_year[['company_name', 'funding_round_type', 'investor_name', 'raised_amount_usd']].sort_values(by='company_name')
 
     ## By year: Unique Company Rounds
-    # df_year[['company_name', 'funding_round_type']].groupby(['company_name', 'funding_round_type']).count()
+    df_year[['company_name', 'funding_round_type']].groupby(['company_name', 'funding_round_type']).count()
 
     ## By year: Aggregated Node list (unique investors and companies)
     # company_list = list(df_year['company_name'].unique())

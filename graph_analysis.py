@@ -133,11 +133,11 @@ company_list = list(df_2['company_name'].unique())
 df_influence['type'] = [0 if x in company_list else 1 for x in df_influence['company_name']]
 
 df_2 = df.copy().fillna(value=1)
-df_company_rounds = df_2[['company_name', 'funding_round_type', 'funding_round_code']].groupby(
-['company_name', 'funding_round_type', 'funding_round_code']).count()
+df_company_rounds = df_2[['company_name', 'funding_round_type', 'funding_round_code']].groupby(['company_name', 'funding_round_type', 'funding_round_code']).count()
 
 
 company_rounds_list = [x for x in df_company_rounds.index]
+company_rounds_list
 freq_list = Counter(x[0] for x in company_rounds_list) # Company: # of Rounds
 
 invest_dict = defaultdict(set)
@@ -151,7 +151,7 @@ def mrounds_rate(df, company_rounds_list, invest_dict):
         mrounds_counter = 0
         company_set = invest_dict[investor]
         for company in company_set:
-            nrounds = company_rounds_list[company]
+            nrounds = freq_list[company]
             if nrounds > 1:
                 mrounds_counter += 1
         try:
@@ -161,6 +161,7 @@ def mrounds_rate(df, company_rounds_list, invest_dict):
     return mrounds_rate
 
 mround_rate = mrounds_rate(df_2, freq_list, invest_dict)
+company_rounds_list
 df_influence['mrounds_rate'] = mround_rate
 df_influence[(df_influence['type'] == 1)].reset_index()
 
@@ -169,6 +170,7 @@ def mrounds_hist(df):
     for x in xrange(218):
         X.append(df.iloc[x]['mrounds_rate'])
     return X
+len(df_investors_only)
 
 df_investors_only = df_influence[(df_influence['type'] == 1)].reset_index()
 X = mrounds_hist(df_investors_only)
