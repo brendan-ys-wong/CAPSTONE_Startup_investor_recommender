@@ -50,7 +50,8 @@ def trim_degrees(g, degree=15):
     """
     g2 = g.copy()
     d = nx.degree(g2)
-    for n in g2.nodes():
+    loop_range = len(g2.nodes())
+    for n in loop_range:
         if d[n] <= degree:
             g2.remove_node(n)
     return g2
