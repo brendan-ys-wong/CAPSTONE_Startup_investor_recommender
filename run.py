@@ -6,7 +6,8 @@ import numpy as np
 from analysis_functions import *
 
 pd.set_option('display.max_rows', 1000)
-df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
+# df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
+df = pd.read_csv('/~/Capstone/crunchbase-data/investments.csv')
 df = df_preprocessing(df)
 df.head()
 
