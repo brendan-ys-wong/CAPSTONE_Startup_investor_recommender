@@ -9,8 +9,8 @@ from analysis_functions import *
 
 pd.set_option('display.max_rows', 1000)
 
-df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
-# df = pd.read_csv('/home/ubuntu/Capstone/crunchbase-data/investments.csv') # For EC2
+# df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
+df = pd.read_csv('/home/ubuntu/Capstone/crunchbase-data/investments.csv') # For EC2
 
 df = df_preprocessing(df)
 
