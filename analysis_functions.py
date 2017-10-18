@@ -73,9 +73,9 @@ def influence_df(df, G):
     es = sorted_map(eig)
 
     degree_names = [x[0] for x in ds[0:250]]
-    close_names = [x[0] for x in cs[0:250]]
-    bet_names = [x[0] for x in bs[0:250]]
-    eig_names = [x[0] for x in es[0:250]]
+    close_names = [x[0] for x in cs[0:]]
+    bet_names = [x[0] for x in bs[0:]]
+    eig_names = [x[0] for x in es[0:]]
 
     union_names = list(set(degree_names) | set(close_names) | set(bet_names) | set(eig_names))
     influence_table = [[name, deg[name], cent[name], bet[name], eig[name]] for name in union_names]
@@ -84,11 +84,13 @@ def influence_df(df, G):
     df_influence = pd.DataFrame(
         influence_table, columns=['company_name', 'degree_centrality',
         'closeness_centrality', 'betweenness_centrality', 'eigenvector_centrality'])
-    df_influence['influence_rank'] = [x/20 for x in df_influence.index]
     company_list = list(df['company_name'].unique())
     df_influence['type'] = [0 if x in company_list else 1 for x in df_influence['company_name']]
     df_influence = df_influence[(df_influence['type'] == 1)].reset_index()
-
+    df_influence['eigen_and_close'] = df_influence['closeness_centrality'] + df_influence['eigenvector_centrality']
+    df_influence.sort_values('eigen_and_close', ascending=False, inplace=True)
+    df_influence.reset_index(inplace=True)
+    df_influence['influence_rank'] = [x/10 for x in df_influence.index]
     return df_influence
 
 def add_mrounds_rate(df, df_influence):
@@ -127,6 +129,6 @@ def add_mrounds_rate(df, df_influence):
 
 def mrounds_hist(df):
     X = []
-    for x in xrange(260):
+    for x in xrange(1450):
         X.append(df.iloc[x]['mrounds_rate'])
     return X

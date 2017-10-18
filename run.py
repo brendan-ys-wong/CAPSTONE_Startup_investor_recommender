@@ -12,11 +12,15 @@ df = df_preprocessing(df)
 G = node_and_edges(df)
 
 df_influence = influence_df(df, G)
-
+df_influence.head(50)
 df_influence = add_mrounds_rate(df, df_influence)
-df_influence
-
+avg_rate = df_influence.groupby('influence_rank').mean()
+df_influence.head(50)
+df_influence['avg_mrounds_rate'] = df_influence.apply(lambda x: avg_rate.iloc[x]['mrounds_rate'] for x in df_influence['influence_rank'].unique())
+mean.head()
 X = mrounds_hist(df_influence)
+
 plt.plot(X)
-plt.savefig('eigen_mrounds.png')
+plt.plot(mean['mrounds_rate'])
+plt.savefig('eigen_and_closeness_mrounds.png')
 plt.show()
