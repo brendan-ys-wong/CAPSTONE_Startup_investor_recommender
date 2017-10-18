@@ -8,23 +8,33 @@ from analysis_functions import *
 pd.set_option('display.max_rows', 1000)
 df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
 df = df_preprocessing(df)
+df.head()
+
+df_unique = df[['company_name', 'funding_round_type', 'funded_year']].groupby(['company_name', 'funding_round_type', 'funded_year']).count()
+years = df['funded_year'].tolist()
+year_counts = Counter(years)
+df_counts = pd.DataFrame.from_dict(year_counts, orient='index')
+df.plot(kind='bar')
+
+plt.show()
+
 
 G = node_and_edges(df)
-
 df_influence = influence_df(df, G)
-df_influence = add_mrounds_rate(df, df_influence)
 df_influence.head()
 
-avg_rate = df_influence.groupby('influence_rank').mean()
-avg_rate.head()
-avg_rate.iloc[0]
-
-df_influence['avg_mrounds_rate'] = df_influence.apply(lambda x: avg_rate.iloc[x]['mrounds_rate'] for x in df_influence['influence_rank'])
-
-
+# Plotting mrounds rate versus centrality metrics
+df_influence = add_mrounds_rate(df, df_influence)
 X = mrounds_hist(df_influence)
+X2 = weighted_avg(df_influence)
 
+
+fig, ax = plt.subplots()
+ax.set_ylabel("'%' investments raising post-seed")
+ax.set_xlabel('Investors ordered by eigenvalue & closeness ')
 plt.plot(X)
-plt.plot(mean['mrounds_rate'])
-plt.savefig('eigen_and_closeness_mrounds.png')
+plt.plot(X2)
+plt.savefig('weighted_eigenandclose_500.png')
 plt.show()
+
+# Plotting Eigen_and_close metric versus investor size

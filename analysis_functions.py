@@ -86,13 +86,14 @@ def influence_df(df, G):
         'closeness_centrality', 'betweenness_centrality', 'eigenvector_centrality'])
     company_list = list(df['company_name'].unique())
     df_influence['type'] = [0 if x in company_list else 1 for x in df_influence['company_name']]
-    df_influence = df_influence[(df_influence['type'] == 1)].reset_index()
+    df_influence = df_influence[(df_influence['type'] == 1)]
     df_influence['eigen_and_close'] = df_influence['closeness_centrality'] + df_influence['eigenvector_centrality']
     df_influence.sort_values('eigen_and_close', ascending=False, inplace=True)
     df_influence.reset_index(inplace=True)
-    df_influence['influence_rank'] = [x/10 for x in df_influence.index]
+    df_influence['influence_rank'] = [x/500 for x in df_influence.index]
     return df_influence
 
+# Functions used in plotting mrounds_rate graphs
 def add_mrounds_rate(df, df_influence):
     """
     Adds column to df_influence regarding the percentage of investments for each investors in the influence dataframe that have
@@ -129,6 +130,13 @@ def add_mrounds_rate(df, df_influence):
 
 def mrounds_hist(df):
     X = []
-    for x in xrange(1450):
+    for x in range(len(df)):
         X.append(df.iloc[x]['mrounds_rate'])
+    return X
+
+def weighted_avg(df):
+    X = []
+    avg_rate = df.groupby('influence_rank').mean()
+    for x in range(len(avg_rate)):
+        X.extend([avg_rate.iloc[x]['mrounds_rate']] * 500)
     return X
