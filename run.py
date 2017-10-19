@@ -1,16 +1,18 @@
 import pandas as pd
-import matplotlib # For EC2
-matplotlib.use('Agg') # For EC2
+# import matplotlib # For EC2
+# matplotlib.use('Agg') # For EC2
 import matplotlib.pyplot as plt
 import networkx as nx
 from collections import Counter, defaultdict
 import numpy as np
 from analysis_functions import *
+import decimal
+from sklearn.model_selection import train_test_split
 
-pd.set_option('display.max_rows', 1000)
+pd.set_option('display.max_rows', 300)
 
-# df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
-df = pd.read_csv('/home/ubuntu/Capstone/crunchbase-data/investments.csv') # For EC2
+df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
+# df = pd.read_csv('/home/ubuntu/Capstone/crunchbase-data/investments.csv') # For EC2
 
 df = df_preprocessing(df)
 G = node_and_edges(df)
@@ -30,18 +32,17 @@ invest_dict, df_influence = add_mrounds_rate(df, df_influence)
 
 # Classification models
 
-# new_influence_dict = df_influence[['company_name', 'eigen_and_close']]
-# influence_dict = new_influence_dict.set_index(['company_name']).to_dict()
-# influence_dict['eigen_and_close']['Accel']
-#
-# seeded_array = (df[(df['funding_round_type'] == 'seed')]['company_name'].unique())
-# mrounds_dict = mrounds_dict(df, seeded_array)
-#
-# model_df = pd.DataFrame()
-# model_df['company_name'] = seeded_array
-# model_df['target'] = model_df['company_name'].apply(lambda x: mrounds_dict[x])
-#
-#
-# centrality_lookupdf = df[(df['funding_round_type'] == 'seed')][['company_name', 'investor_name']]
-# centrality_lookupdf['eigen_close'] = centrality_lookupdf['investor_name'].apply(lambda x: influence_dict['eigen_and_close'][x])
-# centrality_lookupdf.head(20)
+eigen_dict = df_influence[['company_name', 'eigen_and_close']]
+eigen_dict = eigen_dict.set_index(['company_name']).to_dict()
+
+seeded_array = (df[(df['funding_round_type'] == 'seed')]['company_name'].unique())
+mrounds_dict = mrounds_dict(df, seeded_array)
+
+model_df = pd.DataFrame()
+model_df['company_name'] = seeded_array
+model_df['sum_eigen_close'] = model_df['company_name'].apply(lambda x: sum(centrality_lookupdf[(centrality_lookupdf['company_name'] == x)]['eigen_close']))
+model_df['target'] = model_df['company_name'].apply(lambda x: mrounds_dict[x])
+
+
+centrality_lookupdf = df[(df['funding_round_type'] == 'seed')][['company_name', 'investor_name']]
+centrality_lookupdf['eigen_close'] = centrality_lookupdf['investor_name'].apply(lambda x: add_eigen_close(x, influence_dict))

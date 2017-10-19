@@ -7,7 +7,7 @@ import numpy as np
 def df_preprocessing(df):
     df = df.copy().fillna(value=1)
     df['funded_year'] = df['funded_at'].apply(lambda x: x[0:4])
-
+    df = df[(df['funded_year'] != '2014') & (df['funded_year'] != '2015')  ]
     return df
 
 def node_and_edges(df):
@@ -41,7 +41,7 @@ def sorted_map(G):
     ms = sorted(G.iteritems(), key=lambda (k,v): (-v,k))
     return ms
 
-def trim_degrees(g, degree=0):
+def trim_degrees(g, degree=15):
     """
     Trim graph object based on minimum number of degrees per node.
 
@@ -72,7 +72,7 @@ def influence_df(df, G):
     eig = nx.eigenvector_centrality_numpy(core) #Eigenvector centrality
     es = sorted_map(eig)
 
-    degree_names = [x[0] for x in ds[0:]]
+    degree_names = [x[0] for x in ds[0:250]]
     close_names = [x[0] for x in cs[0:]]
     bet_names = [x[0] for x in bs[0:]]
     eig_names = [x[0] for x in es[0:]]
@@ -156,6 +156,12 @@ def weighted_avg(df):
     return X
 
 def mrounds_dict(df, company_list):
+    """
+    Create a dictionary with company name and a 1 if that company raise more
+    than a seed round, and a 0 if it only raised a seed round.
+    Input: Dataframe, list of Companies
+    Output dictionary
+    """
     df_company_rounds = df[['company_name', 'funding_round_type', 'funding_round_code']].groupby(['company_name', 'funding_round_type', 'funding_round_code']).count()
     g1 = pd.DataFrame({'count' : df_company_rounds.groupby( ['company_name','funding_round_type', 'funding_round_code'] ).size()}).reset_index()
     g2 = pd.DataFrame({'count' : g1.groupby( ['company_name','funding_round_type', 'funding_round_code'] ).size()}).reset_index()
@@ -167,3 +173,15 @@ def mrounds_dict(df, company_list):
         else:
             mrounds_dict[company] = 0
     return mrounds_dict
+
+def add_eigen_close(key, influence_dict):
+    """
+    Add eigen_close column to an existing dataframe looked up by investor name.
+    Input: dataframe
+    Outpur: dataframe
+    """
+
+    try:
+        return influence_dict['eigen_and_close'][key]
+    except KeyError:
+        return 0
