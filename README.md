@@ -65,6 +65,24 @@ _Investors by seed count_
 - At least 700: 9
 - At least 800: 6
 
+_Unique funding rounds by year_
+- 2015: 24,741
+- 2014: 28,340
+- 2013: 23,992
+- 2012: 18,064
+- 2011: 14,067
+- 2010: 10,278
+- 2009: 7,428
+- 2008: 8,442
+- 2007: 9,478
+- 2006: 6,438
+- 2005: 5,206
+- 2004: 3,414
+- 2003: 2,690
+- 2002: 1,760
+- 2001: 1,991
+- 2000: 1,252
+- 1999: 753
 
 # Model results | Companies
 Average rate of companies receiving multiple rounds of financing based on seed investor size
@@ -77,6 +95,10 @@ Average rate of companies receiving multiple rounds of financing based on seed i
 
 # Potential Risks
 - Unbalanced classes (more multiple financing round companies than not approx 60/40)
+- Data leakage due to time-series nature of dataset
+
+# Current Findings
+
 
 # Reading Notes:
 - Informal Networks

@@ -126,17 +126,44 @@ def add_mrounds_rate(df, df_influence):
 
     df_influence['mrounds_rate'] = mrounds_rate
 
-    return df_influence
+    return invest_dict, df_influence
 
 def mrounds_hist(df):
+    """
+    Formula to produce a list of the rate of multiple rounds for each investor used
+    for plotting purposes.
+
+    Input: Data Frame
+    Output: List of average rate of multiple rounds per investor
+    """
     X = []
     for x in range(len(df)):
         X.append(df.iloc[x]['mrounds_rate'])
     return X
 
 def weighted_avg(df):
+    """
+    Formula to produce a list of the average rate of multiple rounds for a group of investors used
+    for plotting purposes.
+
+    Input: Data Frame
+    Output: List of average rate of multiple rounds per investor group
+    """
     X = []
     avg_rate = df.groupby('influence_rank').mean()
     for x in range(len(avg_rate)):
         X.extend([avg_rate.iloc[x]['mrounds_rate']] * 500)
     return X
+
+def mrounds_dict(df, company_list):
+    df_company_rounds = df[['company_name', 'funding_round_type', 'funding_round_code']].groupby(['company_name', 'funding_round_type', 'funding_round_code']).count()
+    g1 = pd.DataFrame({'count' : df_company_rounds.groupby( ['company_name','funding_round_type', 'funding_round_code'] ).size()}).reset_index()
+    g2 = pd.DataFrame({'count' : g1.groupby( ['company_name','funding_round_type', 'funding_round_code'] ).size()}).reset_index()
+
+    mrounds_dict = {}
+    for company in company_list:
+        if len(g2[(g2['company_name'] == company)]) > 1:
+            mrounds_dict[company] = 1
+        else:
+            mrounds_dict[company] = 0
+    return mrounds_dict

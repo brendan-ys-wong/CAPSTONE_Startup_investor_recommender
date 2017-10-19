@@ -13,31 +13,13 @@ pd.set_option('display.max_rows', 1000)
 df = pd.read_csv('/home/ubuntu/Capstone/crunchbase-data/investments.csv') # For EC2
 
 df = df_preprocessing(df)
-
-# df_unique = df[['company_name', 'funding_round_type', 'funded_year']].groupby(['company_name', 'funding_round_type', 'funded_year']).count()
-# years = df['funded_year'].tolist()
-# year_counts = Counter(years)
-# df_counts = pd.DataFrame.from_dict(year_counts, orient='index')
-# df.plot(kind='bar')
-# plt.show()
-
 G = node_and_edges(df)
-# d = nx.degree(G)
-# d = sorted(d, key=[reverse])
-# d.keys
-# for k,v in d:
-#     print k, v
-#     break
-
 df_influence = influence_df(df, G)
-# df_influence.head()
+invest_dict, df_influence = add_mrounds_rate(df, df_influence)
 
 # Plotting mrounds rate versus centrality metrics
-df_influence = add_mrounds_rate(df, df_influence)
 # X = mrounds_hist(df_influence)
 # X2 = weighted_avg(df_influence)
-#
-#
 # fig, ax = plt.subplots()
 # ax.set_ylabel("'%' investments raising post-seed")
 # ax.set_xlabel('Investors ordered by eigenvalue & closeness ')
@@ -46,4 +28,20 @@ df_influence = add_mrounds_rate(df, df_influence)
 # plt.savefig('weighted_eigenandclose_500.png')
 # plt.show()
 
-# Plotting Eigen_and_close metric versus investor size
+# Classification models
+
+# new_influence_dict = df_influence[['company_name', 'eigen_and_close']]
+# influence_dict = new_influence_dict.set_index(['company_name']).to_dict()
+# influence_dict['eigen_and_close']['Accel']
+#
+# seeded_array = (df[(df['funding_round_type'] == 'seed')]['company_name'].unique())
+# mrounds_dict = mrounds_dict(df, seeded_array)
+#
+# model_df = pd.DataFrame()
+# model_df['company_name'] = seeded_array
+# model_df['target'] = model_df['company_name'].apply(lambda x: mrounds_dict[x])
+#
+#
+# centrality_lookupdf = df[(df['funding_round_type'] == 'seed')][['company_name', 'investor_name']]
+# centrality_lookupdf['eigen_close'] = centrality_lookupdf['investor_name'].apply(lambda x: influence_dict['eigen_and_close'][x])
+# centrality_lookupdf.head(20)

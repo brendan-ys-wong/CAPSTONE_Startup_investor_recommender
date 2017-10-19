@@ -1,5 +1,11 @@
 import pandas as pd
 from collections import defaultdict
+from analysis_functions import *
+import networkx as nx
+from collections import Counter, defaultdict
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
 
 def multiple_rounds_prob(df):
     """
@@ -53,10 +59,8 @@ def optimized_multiple_rounds_prob(df, low, high):
 
 if __name__ == "__main__":
     df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
+    df = df_preprocessing(df)
     df.head()
-    df['funded_at'].sort_values()
-    arr = df['company_country_code'].unique()
-    arr
 
 
     #Baseline model
@@ -66,10 +70,12 @@ if __name__ == "__main__":
     #     print optimized_multiple_rounds_prob(df, low, high)
 
 
+    # Companies with seed
+    seeded_array = (df[(df['funding_round_type'] == 'seed')]['company_name'].unique())
+    seeded_array.shape
 
-    ## Companies with seed
-    # seeded_array = (df[(df['funding_round_type'] == 'seed')]['company_name'].unique())
-    # seeded_array.shape
+    df[['company_name', 'funding_round_type', 'funding_round_code']].groupby(['company_name', 'funding_round_type', 'funding_round_code']).count()
+    df[['company_name', 'funding_round_type', 'funding_round_code']].groupby(['company_name']).count()
 
     ## Investors in seed
     # beyond_seed = ['']
