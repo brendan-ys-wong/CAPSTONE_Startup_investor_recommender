@@ -41,7 +41,7 @@ def sorted_map(G):
     ms = sorted(G.iteritems(), key=lambda (k,v): (-v,k))
     return ms
 
-def trim_degrees(g, degree=15):
+def trim_degrees(g, degree=0):
     """
     Trim graph object based on minimum number of degrees per node.
 
@@ -72,7 +72,7 @@ def influence_df(df, G):
     eig = nx.eigenvector_centrality_numpy(core) #Eigenvector centrality
     es = sorted_map(eig)
 
-    degree_names = [x[0] for x in ds[0:250]]
+    degree_names = [x[0] for x in ds[0:]]
     close_names = [x[0] for x in cs[0:]]
     bet_names = [x[0] for x in bs[0:]]
     eig_names = [x[0] for x in es[0:]]
