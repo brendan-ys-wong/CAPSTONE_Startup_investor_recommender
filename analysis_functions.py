@@ -5,9 +5,9 @@ from collections import Counter, defaultdict
 import numpy as np
 
 def df_preprocessing(df):
-    df = df.copy().fillna(value=1)
+    df = df.copy().fillna(value=1) # Used because 'Seed' funding types have naan for code column
     df['funded_year'] = df['funded_at'].apply(lambda x: x[0:4])
-    df = df[(df['funded_year'] != '2014') & (df['funded_year'] != '2015')  ]
+    df = df[(df['funded_year'] != '2014') & (df['funded_year'] != '2015')]
     return df
 
 def node_and_edges(df):
@@ -17,14 +17,14 @@ def node_and_edges(df):
     Input: Dataframe
     Output: Graph object
     """
-    company_list = list(df['company_name'].unique())
-    investor_list = list(df['investor_name'].unique())
-    edge_df = df[['company_name', 'funding_round_type', 'investor_name', 'raised_amount_usd']].sort_values(by='company_name')
+    company_list = set(df['company_name'])
+    investor_list = set(df['investor_name'])
     edge_list = []
 
-    for i in range(len(edge_df)):
-        edge_list.append((edge_df['investor_name'].values[i], edge_df['company_name'].values[i]))
+    for i in range(len(df)):
+        edge_list.append((df['investor_name'].values[i], df['company_name'].values[i]))
 
+    edge_list = set(edge_list)
     G = nx.Graph()
     G.add_nodes_from(investor_list, color='red', size=50)
     G.add_nodes_from(company_list, color='blue', size=50)
@@ -41,19 +41,19 @@ def sorted_map(G):
     ms = sorted(G.iteritems(), key=lambda (k,v): (-v,k))
     return ms
 
-def trim_degrees(g, degree=15):
+def trim_degrees(G, degree=15):
     """
     Trim graph object based on minimum number of degrees per node.
 
     Input: graph object, and minimum number of degrees per node_list
     Output: trimmed graph object
     """
-    g2 = g.copy()
-    d = nx.degree(g2)
-    for n in g2.nodes():
+
+    d = nx.degree(G)
+    for n in G.nodes():
         if d[n] <= degree:
-            g2.remove_node(n)
-    return g2
+            G.remove_node(n)
+    return G
 
 def influence_df(df, G):
     """
@@ -79,13 +79,16 @@ def influence_df(df, G):
 
     union_names = list(set(degree_names) | set(close_names) | set(bet_names) | set(eig_names))
     influence_table = [[name, deg[name], cent[name], bet[name], eig[name]] for name in union_names]
-    influence_table = sorted(influence_table, key=lambda x: x[4], reverse=True)
 
     df_influence = pd.DataFrame(
         influence_table, columns=['company_name', 'degree_centrality',
         'closeness_centrality', 'betweenness_centrality', 'eigenvector_centrality'])
-    company_list = list(df['company_name'].unique())
+    company_list = set(df['company_name']) #v Old Version
     df_influence['type'] = [0 if x in company_list else 1 for x in df_influence['company_name']]
+
+    # investor_list = set(df['investor_name'])
+    # df_influence['type'] = [1 if x in investor_list else 0 for x in df_influence['company_name']]
+
     df_influence = df_influence[(df_influence['type'] == 1)]
     df_influence['eigen_and_close'] = df_influence['closeness_centrality'] + df_influence['eigenvector_centrality']
     df_influence.sort_values('eigen_and_close', ascending=False, inplace=True)
