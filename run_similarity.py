@@ -27,10 +27,19 @@ mask[mask]
 observation_data = observation_data[observation_data['company_name'].isin(mask[mask].index)]
 observation_data.head()
 len(observation_data['company_name'].unique())
+
+# For investors as the item
 interaction_data = observation_data[['company_name', 'investor_name']]
 interaction_data.head(20)
-df = pd.DataFrame(interaction_data).to_csv()
+interaction_data.to_csv("interaction_data.csv")
 
+# For companies as the item
+interaction_data = observation_data[['investor_name', 'company_name']]
+interaction_data.head(20)
+interaction_data.to_csv("interaction_data.csv")
 
-sf = graphlab.SFrame.read_csv(df)
+sf = graphlab.SFrame.read_csv("interaction_data.csv")
 m1 = graphlab.recommender.item_similarity_recommender.create(observation_data=sf, user_id = 'company_name', item_id = 'investor_name')
+m1.list_fields()
+m1.get_current_options()
+m1.get_similar_users()
