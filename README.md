@@ -84,7 +84,9 @@ _Unique funding rounds by year_
 - 2000: 1,252
 - 1999: 753
 
-# Model results | Companies
+# Fundraising results
+
+_Based on seed investor size_
 Average rate of companies receiving multiple rounds of financing based on seed investor size
 - (0,10):     0.59 | 22,815
 - (11,50):    0.65 | 20,268
@@ -92,6 +94,13 @@ Average rate of companies receiving multiple rounds of financing based on seed i
 - (201,400):  0.73 | 7,364
 - (401,700):  0.71 | 3,547
 - (700,1050): 0.55 | 4,928
+
+_Based on Eigenvalue and Closeness scores_
+- Top 500
+- Middle 500
+- Bottom 500
+
+
 
 # Potential Risks
 - Unbalanced classes (more multiple financing round companies than not approx 60/40)

@@ -35,8 +35,8 @@ shuffled_seeded_companiesdf = seeded_companiesdf.sample(frac=1)
 len(shuffled_seeded_companiesdf)
 sampled_shuffled_seeded = shuffled_seeded_companiesdf[0:20000]
 
-
-
+G = node_and_edges(sampled_shuffled_seeded)
+eig = nx.eigenvector_centrality_numpy(G)
 
 
 
