@@ -1,10 +1,9 @@
 # Summary
-This repository is a current work-in-progress. The aim is the to use graph theory and machine learning techniques to analyze a database of venture capital investors and the underlying network effects that influence start-up success.
+This repository is a current work-in-progress, please excuse the mess.
 
-# Objectives
-
-- Identify the most influential VC companies based on network centrality measures
-- Statistically validate that companies associated with the most influential VC companies are more likely to receive funding rounds
+This project will build a recommender system to recommend to start-ups
+which investors are likely to be interested in investing in their next
+round of financing.
 
 
 # Exploratory Data Analysis
@@ -95,12 +94,6 @@ Average rate of companies receiving multiple rounds of financing based on seed i
 - (401,700):  0.71 | 3,547
 - (700,1050): 0.55 | 4,928
 
-_Based on Eigenvalue and Closeness scores_
-- Top 500
-- Middle 500
-- Bottom 500
-
-
 
 # Potential Risks
 - Unbalanced classes (more multiple financing round companies than not approx 60/40)
@@ -110,6 +103,7 @@ _Based on Eigenvalue and Closeness scores_
 
 
 # Reading Notes:
+_GRAPH THEORY TOPICS_
 - Informal Networks
 - Amplification / Feedback loops
 - Middle-class networkers

@@ -13,33 +13,45 @@ sys.setdefaultencoding('utf8')
 pd.set_option('display.max_rows', 300)
 df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
 df = df_preprocessing(df)
-df.head(20)
+# df.head(20)
 
 # Hold-out data is from the last 6 months of 2015
 observation_data = df[(~df['funded_year_month'].isin(['2015-07', '2015-08', '2015-09', '2015-10', '2015-11', '2015-12']))]
-observation_data.head()
+# observation_data.head()
 
 
 # I dropped user-item interaction data when the company had less than 2 investors, due to the the large number of users for which this applied.
 # This sparse interaction data would be expected to hurt the performance of my recommendation model.
 mask = observation_data.groupby('company_name')['investor_name'].count() >2
-mask[mask]
+# mask[mask]
 observation_data = observation_data[observation_data['company_name'].isin(mask[mask].index)]
-observation_data.head()
+# observation_data.head()
 len(observation_data['company_name'].unique())
 
 # For investors as the item
 interaction_data = observation_data[['company_name', 'investor_name']]
-interaction_data.head(20)
+# interaction_data.head(20)
 interaction_data.to_csv("interaction_data.csv")
 
 # For companies as the item
-interaction_data = observation_data[['investor_name', 'company_name']]
-interaction_data.head(20)
-interaction_data.to_csv("interaction_data.csv")
+# interaction_data = observation_data[['investor_name', 'company_name']]
+# interaction_data.head(20)
+# interaction_data.to_csv("interaction_data.csv")
 
 sf = graphlab.SFrame.read_csv("interaction_data.csv")
 m1 = graphlab.recommender.item_similarity_recommender.create(observation_data=sf, user_id = 'company_name', item_id = 'investor_name')
-m1.list_fields()
+# m1.list_fields()
 m1.get_current_options()
-m1.get_similar_users()
+# m1.get_similar_items()
+m1.evaluate(sf, exclude_known_for_precision_recall=False)
+
+m1.recommend(users=['23andMe'])
+
+test_prediction = df[(df['funded_year_month'].isin(['2015-07', '2015-08', '2015-09', '2015-10', '2015-11', '2015-12']))]
+test_companies = test_prediction['company_name'].unique()
+company_list = observation_data['company_name'].unique()
+samples = [x for x in test_companies if x in company_list]
+samples
+test_prediction[(test_prediction['company_name'] == '23andMe')]
+twentythree_test_investors = list(test_prediction[(test_prediction['company_name'] == '23andMe')]['investor_name'].unique())
+twentythree_test_investors
