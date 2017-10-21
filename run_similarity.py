@@ -5,6 +5,9 @@ from collections import Counter, defaultdict
 import numpy as np
 from analysis_functions_similarity import *
 import graphlab
+from graphlab.toolkits.cross_validation import cross_val_score, KFold
+
+
 
 import sys
 reload(sys)
@@ -55,3 +58,8 @@ samples
 test_prediction[(test_prediction['company_name'] == '23andMe')]
 twentythree_test_investors = list(test_prediction[(test_prediction['company_name'] == '23andMe')]['investor_name'].unique())
 twentythree_test_investors
+
+folds = KFold(sf, num_folds=5)
+params = {'user_id':'company_name', 'item_id':'investor_name'}
+job = cross_val_score(folds, graphlab.recommender.item_similarity_recommender.create, params)
+job.get_results()
