@@ -13,7 +13,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-pd.set_option('display.max_rows', 300)
+pd.set_option('display.max_rows', 800)
 df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
 df = df_preprocessing(df)
 # df.head(20)
@@ -32,6 +32,7 @@ observation_data = observation_data[observation_data['company_name'].isin(mask[m
 len(observation_data['company_name'].unique())
 
 # For investors as the item
+observation_data.head()
 interaction_data = observation_data[['company_name', 'investor_name']]
 # interaction_data.head(20)
 interaction_data.to_csv("interaction_data.csv")
@@ -50,16 +51,37 @@ m1.evaluate(sf, exclude_known_for_precision_recall=False)
 
 m1.recommend(users=['23andMe'])
 
-test_prediction = df[(df['funded_year_month'].isin(['2015-07', '2015-08', '2015-09', '2015-10', '2015-11', '2015-12']))]
-test_companies = test_prediction['company_name'].unique()
-company_list = observation_data['company_name'].unique()
-samples = [x for x in test_companies if x in company_list]
-samples
-test_prediction[(test_prediction['company_name'] == '23andMe')]
-twentythree_test_investors = list(test_prediction[(test_prediction['company_name'] == '23andMe')]['investor_name'].unique())
-twentythree_test_investors
 
 folds = KFold(sf, num_folds=5)
 params = {'user_id':'company_name', 'item_id':'investor_name'}
+job = cross_val_score(folds, graphlab.recommender.item_similarity_recommender.create, params)
+job.get_results()
+observation_data.head()
+observation_data[(observation_data['company_country_code'] == 1)]
+observation_data['company_country_code'].unique()
+mask = (observation_data[(observation_data['company_country_code'] == 'USA')].groupby('company_city').count() > 300)
+
+observation_data[observation_data.isin(mask[mask].index)].groupby('company_city').count()
+mask.head()
+big_cities_list = mask[(mask['company_name'] == True)]
+len(observation_data)
+observation_data.head()
+
+cities = list(big_cities_list.index)
+dummy_df = add_cities_dummies(df, cities)
+len(dummy_df)
+dummy_df[(dummy_df['company_name'] == 'Zynga')]
+dummy_df.head()
+dummy_df.columns
+dummy_df = dummy_df.drop(['company_permalink', 'company_city','company_category_list', 'company_country_code', 'company_state_code', 'company_region', 'investor_permalink', 'investor_country_code', 'investor_state_code', 'investor_region', 'investor_city', 'funding_round_permalink', 'funding_round_type', 'funding_round_code', 'funded_at', 'raised_amount_usd', 'funded_year', 'funded_year_month'], axis=1)
+dummy_df_user = dummy_df.drop('investor_name', axis=1)
+dummy_df.to_csv("interaction_data_2.csv")
+dummy_df_user.to_csv("interaction_data_2_user.csv")
+
+sf2 = graphlab.SFrame.read_csv("interaction_data_2.csv")
+sf2_user  = graphlab.SFrame("interaction_data_2_user.csv")
+m2 = graphlab.recommender.item_similarity_recommender.create(observation_data=sf2, user_id = 'company_name', item_id = 'investor_name', user_data=sf2_user)
+folds = KFold(sf2, num_folds=5)
+params = {'user_id':'company_name', 'item_id':'investor_name', 'user_data':sf2_user}
 job = cross_val_score(folds, graphlab.recommender.item_similarity_recommender.create, params)
 job.get_results()
