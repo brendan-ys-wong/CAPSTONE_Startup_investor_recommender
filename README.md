@@ -13,8 +13,6 @@ to identify which of these large investors are likely to invest. The benefit to 
 to complete the fundraising round.
 
 
-
-
 # Exploratory Data Analysis
 Statistics from exploring the data set
 
@@ -23,8 +21,11 @@ _Interaction Data_
     - Unique companies: 15,000
     - Unique investors: 20,000
     - Companies average 7.4 investors, investors average 5.5 companies
-    - Around 300 investors with over 50 investments
-
+    
+- Large Investors: Around 300 with over 50 investments
+    - Seed: 9,591 total / 44 greater than 50
+    - Venture: 13,631 total / 274 greater than 50
+    - Both: 3,222 total / around 18 both
 
 _Funding types_
 - venture: 24,264

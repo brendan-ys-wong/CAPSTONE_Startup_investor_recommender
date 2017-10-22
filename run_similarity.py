@@ -22,11 +22,12 @@ observation_data = df[(~df['funded_year_month'].isin(['2015-07', '2015-08', '201
 # This sparse interaction data would be expected to hurt the performance of my recommendation model.
 mask = observation_data.groupby('company_name')['investor_name'].count() >2
 observation_data = observation_data[observation_data['company_name'].isin(mask[mask].index)]
-interaction_data = observation_data[['company_name', 'investor_name']]
-interaction_data.groupby('investor_name').count().sort_values('company_name', ascending=False)
-interaction_data.to_csv("interaction_data.csv")
+
+
 
 # # Model 1: Only using interaction data, item-similarity model, Jaccard difference
+interaction_data = observation_data[['company_name', 'investor_name']]
+interaction_data.to_csv("interaction_data.csv")
 sf = graphlab.SFrame.read_csv("interaction_data.csv")
 m1 = graphlab.recommender.item_similarity_recommender.create(observation_data=sf, user_id = 'company_name', item_id = 'investor_name')
 # m1.list_fields()
@@ -41,29 +42,14 @@ job.get_results()
 
 
 
-
-
-
-observation_data.head()
-observation_data[(observation_data['company_country_code'] == 1)]
-observation_data['company_country_code'].unique()
+# # Model 2: Same as model 1, but with US city as item side data
 mask = (observation_data[(observation_data['company_country_code'] == 'USA')].groupby('company_city').count() > 300)
-
-observation_data[observation_data.isin(mask[mask].index)].groupby('company_city').count()
-mask.head()
 big_cities_list = mask[(mask['company_name'] == True)]
-len(observation_data)
-observation_data.head()
-
 cities = list(big_cities_list.index)
 dummy_df = add_cities_dummies(df, cities)
-len(dummy_df)
-dummy_df[(dummy_df['company_name'] == 'Zynga')]
-dummy_df.head()
-dummy_df.columns
 dummy_df = dummy_df.drop(['company_permalink', 'company_city','company_category_list', 'company_country_code', 'company_state_code', 'company_region', 'investor_permalink', 'investor_country_code', 'investor_state_code', 'investor_region', 'investor_city', 'funding_round_permalink', 'funding_round_type', 'funding_round_code', 'funded_at', 'raised_amount_usd', 'funded_year', 'funded_year_month'], axis=1)
-dummy_df_user = dummy_df.drop('investor_name', axis=1)
 dummy_df.to_csv("interaction_data_2.csv")
+dummy_df_user = dummy_df.drop('investor_name', axis=1)
 dummy_df_user.to_csv("interaction_data_2_user.csv")
 
 sf2 = graphlab.SFrame.read_csv("interaction_data_2.csv")
