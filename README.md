@@ -21,7 +21,7 @@ _Interaction Data_
     - Unique companies: 15,000
     - Unique investors: 20,000
     - Companies average 7.4 investors, investors average 5.5 companies
-    
+
 - Large Investors: Around 300 with over 50 investments
     - Seed: 9,591 total / 44 greater than 50
     - Venture: 13,631 total / 274 greater than 50
