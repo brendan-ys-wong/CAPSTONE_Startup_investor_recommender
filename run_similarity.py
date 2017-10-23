@@ -8,6 +8,7 @@ from analysis_functions_similarity import *
 import graphlab
 from graphlab.toolkits.cross_validation import cross_val_score, KFold
 
+
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -63,4 +64,7 @@ m1.get_similar_items().print_rows(50)
 # job.get_results()
 
 
-# # Model 3: Same as model
+# # Model 3: Item Content Data recommender
+df.head()
+interaction_data_3 = observation_data_large[['company_name', 'investor_name', 'company_category_list']]
+m3 = graphlab.recommender.item_content_recommender.create()
