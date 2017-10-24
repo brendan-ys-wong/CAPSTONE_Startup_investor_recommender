@@ -1,7 +1,7 @@
 import pandas as pd
 pd.set_option('display.max_rows', 800)
 pd.set_option('display.width', None)
-pd.set_option('display.max_colwidth', 100)
+pd.set_option('display.max_colwidth', 200)
 import matplotlib.pyplot as plt
 import networkx as nx
 from collections import Counter, defaultdict
@@ -78,18 +78,19 @@ company_cat = observation_data_large[['company_name', 'company_category_list']]
 company_cat = company_cat.drop_duplicates()
 company_cat.to_csv('/Users/brendanwong/galvanize/interaction_data/company_cat.csv')
 sf_cc = graphlab.SFrame.read_csv('/Users/brendanwong/galvanize/interaction_data/company_cat.csv')
+sf_cc.append(sf_test)
 
-interaction_data_3 = observation_data_large[['company_name', 'investor_name']]
-interaction_data_3.to_csv('/Users/brendanwong/galvanize/interaction_data/interaction_data_3.csv')
-sf3 = graphlab.SFrame.read_csv('/Users/brendanwong/galvanize/interaction_data/interaction_data_3.csv')
-train, test = graphlab.recommender.util.random_split_by_user(sf3, user_id="investor_name", item_id="company_name")
+# interaction_data_3 = observation_data_large[['company_name', 'investor_name']]
+# interaction_data_3.to_csv('/Users/brendanwong/galvanize/interaction_data/interaction_data_3.csv')
+# sf3 = graphlab.SFrame.read_csv('/Users/brendanwong/galvanize/interaction_data/interaction_data_3.csv')
+# train, test = graphlab.recommender.util.random_split_by_user(sf3, user_id="investor_name", item_id="company_name")
 
 m3 = graphlab.recommender.item_content_recommender.create(item_data=sf_cc, item_id='company_name')
-sf_cc
-sf_test = graphlab.SFrame({'X1':[21000],'company_name':['test_face'], 'company_category_list': ['Analytics']})
-m3.recommend(new_observation_data=sf_test)
 
+sf_test = graphlab.SFrame({'X1':[21000],'company_name':['ZZZ_Test'], 'company_category_list': ['Analytics']})
+m3.get_similar_items(['23andMe'])
 
+sf_cc[(sf_cc['company_name'] == 'Zyncro')]
 # folds = KFold(sf3, num_folds=3)
 # params = {'item_id':'investor_name'}
 # job = cross_val_score(folds, graphlab.recommender.item_content_recommender.create, params)
