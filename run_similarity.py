@@ -78,20 +78,32 @@ company_cat = observation_data_large[['company_name', 'company_category_list']]
 company_cat = company_cat.drop_duplicates()
 company_cat.to_csv('/Users/brendanwong/galvanize/interaction_data/company_cat.csv')
 sf_cc = graphlab.SFrame.read_csv('/Users/brendanwong/galvanize/interaction_data/company_cat.csv')
-sf_cc.append(sf_test)
+sf_cc
 
 # interaction_data_3 = observation_data_large[['company_name', 'investor_name']]
 # interaction_data_3.to_csv('/Users/brendanwong/galvanize/interaction_data/interaction_data_3.csv')
 # sf3 = graphlab.SFrame.read_csv('/Users/brendanwong/galvanize/interaction_data/interaction_data_3.csv')
 # train, test = graphlab.recommender.util.random_split_by_user(sf3, user_id="investor_name", item_id="company_name")
-
-m3 = graphlab.recommender.item_content_recommender.create(item_data=sf_cc, item_id='company_name')
+av = graphlab.toolkits.feature_engineering.AutoVectorizer(features=['company_category_list'])
+av.fit(sf_cc)
+m3 = graphlab.recommender.item_content_recommender.create(item_data=sf_cc, item_id='company_name', item_data_transform=av)
 
 sf_test = graphlab.SFrame({'X1':[21000],'company_name':['ZZZ_Test'], 'company_category_list': ['Analytics']})
-m3.get_similar_items(['23andMe'])
+m3.get_similar_items(['Zynga'])
 
 sf_cc[(sf_cc['company_name'] == 'Zyncro')]
 # folds = KFold(sf3, num_folds=3)
 # params = {'item_id':'investor_name'}
 # job = cross_val_score(folds, graphlab.recommender.item_content_recommender.create, params)
 # job.get_results()
+
+# # TFIDF Vectorizing Industry
+company_cat.head()
+vocab = []
+vocab = [str(x).split('|') for x in company_cat['company_category_list']]
+l = set()
+vocab
+for word in vocab:
+    for i in range(len(word)):
+        l.add(word[i])
+len(l)
