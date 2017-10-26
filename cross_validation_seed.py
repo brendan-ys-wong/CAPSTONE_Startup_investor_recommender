@@ -3,7 +3,7 @@ from analysis_functions_similarity import *
 import spacy
 nlp = spacy.load('en_core_web_md')
 
-df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
+df = pd.read_csv('/home/ubuntu//Capstone/crunchbase-data/investments.csv')
 df = df_preprocessing(df)
 mask_d = (~df['funded_year_month'].isin(['2015-07', '2015-08', '2015-09', '2015-10', '2015-11', '2015-12']))
 observation_data = df[mask_d]
