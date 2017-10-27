@@ -1,9 +1,14 @@
 import graphlab
-from analysis_functions_similarity import *
 import spacy
 nlp = spacy.load('en_core_web_md')
 
-df = pd.read_csv('/home/ubuntu//Capstone/crunchbase-data/investments.csv')
+df = pd.read_csv('/home/ubuntu/Capstone/crunchbase-data/investments.csv')
+def df_preprocessing(df):
+    df = df.copy().fillna(value=0) # Used because 'Seed' funding types have naan for code column
+    df['funded_year'] = df['funded_at'].apply(lambda x: x[0:4])
+    df['funded_year_month'] = df['funded_year'] + "-" + df['funded_at'].apply(lambda x: x[5:7])
+    df = df[(df['funding_round_type'] == 'seed') | (df['funding_round_type'] == 'venture')]
+    return df
 df = df_preprocessing(df)
 mask_d = (~df['funded_year_month'].isin(['2015-07', '2015-08', '2015-09', '2015-10', '2015-11', '2015-12']))
 observation_data = df[mask_d]
@@ -12,8 +17,8 @@ i_count = df.groupby('investor_name').count().sort_values('company_name', ascend
 i_count = i_count.reset_index()
 
 test_data = observation_data
-test_data.to_csv('/Users/brendanwong/galvanize/interaction_data/delete2_data.csv')
-sf = graphlab.SFrame.read_csv('/Users/brendanwong/galvanize/interaction_data/delete2_data.csv')
+test_data.to_csv('/home/ubuntu/Capstone/interaction_data/delete2_data.csv')
+sf = graphlab.SFrame.read_csv('/home/ubuntu/Capstone/interaction_data/delete2_data.csv')
 train, test = graphlab.recommender.util.random_split_by_user(sf, user_id="company_name", item_id="investor_name", max_num_users=25000)
 train_df = train.to_dataframe()
 train_df = train_df[(train_df['funding_round_type'] == 'seed')]
