@@ -56,4 +56,4 @@ for company in test_df['company_name']:
 
     ret_investors = list(df_ret['investor_name'].iloc[0:10])
     test_dict[company] = ret_investors
-    break
+    
