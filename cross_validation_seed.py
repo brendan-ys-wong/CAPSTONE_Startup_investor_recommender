@@ -56,4 +56,19 @@ for company in test_df['company_name']:
 
     ret_investors = list(df_ret['investor_name'].iloc[0:10])
     test_dict[company] = ret_investors
-    
+
+val_dict = {}
+for company in test_df['company_name']:
+    val_dict[company] = test_df[(test_df['company_name'] == company)]['investor_name'].tolist()
+
+total = 0
+correct = 0
+
+for x in test_dict.iterkeys():
+    for y in val_dict[x]:
+        total += 1
+
+for x in test_dict.iterkeys():
+    correct += len(set(test_dict[x]) & set(val_dict[x]))
+
+print float(correct)/float(total)
