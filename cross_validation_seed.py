@@ -39,7 +39,7 @@ test_dict = {}
 
 for company in test_df['company_name']:
     temp_df = train_df.copy()
-    vec = nlp(unicode(company))
+    vec = nlp(unicode(test_df[(test_df['company_name'] == company)]['company_category_list']))
     temp_df['cosine_similarity'] = temp_df['company_category_list'].apply(lambda x: vec.similarity(cosine_sim(x)))
     temp_df = temp_df.sort_values(['cosine_similarity'], ascending=False)
     mask = (temp_df['cosine_similarity'] > 0.7)
