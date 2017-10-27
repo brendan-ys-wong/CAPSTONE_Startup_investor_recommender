@@ -1,5 +1,6 @@
 import graphlab
 import spacy
+import pandas as pd
 nlp = spacy.load('en_core_web_md')
 
 df = pd.read_csv('/home/ubuntu/Capstone/crunchbase-data/investments.csv')
