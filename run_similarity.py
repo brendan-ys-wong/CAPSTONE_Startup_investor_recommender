@@ -44,9 +44,14 @@ interaction_data2.to_csv('/Users/brendanwong/galvanize/interaction_data/interact
 sf2 = graphlab.SFrame.read_csv('/Users/brendanwong/galvanize/interaction_data/interaction_data2.csv')
 train2, test2 = graphlab.recommender.util.random_split_by_user(sf2, user_id="company_name", item_id="investor_name", max_num_users=25000)
 m2 = graphlab.recommender.item_similarity_recommender.create(observation_data=train2, user_id = 'company_name', item_id = 'investor_name')
-eval_2 = m2.evaluate(test2, cutoffs=[40])
+eval_2 = m2.evaluate(test2, cutoffs=[30])
 eval_2
+test2['company_name'].unique()
+m2.recommend(['Beijing Weiying Technology'])
 
+a = observation_data.groupby('investor_name').count()
+a = a.sort_values('company_name', ascending=False)
+a
 
 # # Cross Validation
 # folds = KFold(sf, num_folds=5)
