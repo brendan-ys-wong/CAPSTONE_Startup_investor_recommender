@@ -3,22 +3,29 @@ import pandas as pd
 import numpy as np
 from random import randint
 import graphlab
-from analysis_functions_similarity import *
-
-# Initialization & Set-up
-df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
-i_count = df.groupby('investor_name').count().sort_values('company_name', ascending=False)
-i_count = i_count.reset_index()
 
 # Functions
 def cosine_sim(x):
     x_vec = nlp(unicode(x))
     return x_vec
 
-# User Input Section
+def df_preprocessing(df):
+    df = df.copy().fillna(value=0) # Used because 'Seed' funding types have naan for code column
+    df['funded_year'] = df['funded_at'].apply(lambda x: x[0:4])
+    df['funded_year_month'] = df['funded_year'] + "-" + df['funded_at'].apply(lambda x: x[5:7])
+    df = df[(df['funding_round_type'] == 'seed') | (df['funding_round_type'] == 'venture')]
+    return df
+
+# Loading data and creating investor investment-count dataframe
+df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
+i_count = df.groupby('investor_name').count().sort_values('company_name', ascending=False)
+i_count = i_count.reset_index()
+
+# User Input
 u_company = raw_input("Enter your company name: ")
 u_type = raw_input("Recommendations: Enter 0 for seed investors or 1 for venture investors: ") # TODO: If something other than 0/1 entered
 
+# Recommendations based on company description
 if u_type == '0':
     nlp = spacy.load('en_core_web_md')
     u_category = raw_input("Enter the industries your company belongs in. It's OK to enter multiple industries. (e.g. Games, Media, Mobile): ")
@@ -26,9 +33,7 @@ if u_type == '0':
     cc = df[['company_name', 'company_category_list']]
     cc = cc.drop_duplicates()
 
-# Identify similar companies, then similar investors
     vec = nlp(unicode(u_category))
-
     cc['cosine_similarity'] = cc['company_category_list'].apply(lambda x: vec.similarity(cosine_sim(x)))
     cc = cc.sort_values(['cosine_similarity'], ascending=False)
 
@@ -48,6 +53,7 @@ if u_type == '0':
     ret_investors = list(df_ret['investor_name'].iloc[0:10])
     print ret_investors
 
+# Recommendations based on investor list
 if u_type == '1':
     u_investors = raw_input("Enter the full names of your current investors: (e.g. 500 Startups, Billie Jean): ")
     u_investors = u_investors.split(',')

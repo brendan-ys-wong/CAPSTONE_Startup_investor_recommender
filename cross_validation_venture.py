@@ -34,7 +34,7 @@ sf = graphlab.SFrame.read_csv('/Users/brendanwong/galvanize/interaction_data/del
 train, test = graphlab.recommender.util.random_split_by_user(sf, user_id="company_name", item_id="investor_name", max_num_users=25000)
 train_df = train.to_dataframe()
 train_df = train_df[(train_df['funding_round_type'] == 'venture')]
-train_list = train_df.groupby('investor_name').count().sort_values("company_name", ascending=False).reset_index()['investor_name'].iloc[0:40]
+train_list = train_df.groupby('investor_name').count().sort_values("company_name", ascending=False).reset_index()['investor_name'].iloc[0:30]
 len(train_df)
 train_list
 
