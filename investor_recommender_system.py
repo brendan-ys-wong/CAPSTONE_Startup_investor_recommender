@@ -14,16 +14,20 @@ def df_preprocessing(df):
     df['funded_year'] = df['funded_at'].apply(lambda x: x[0:4])
     df['funded_year_month'] = df['funded_year'] + "-" + df['funded_at'].apply(lambda x: x[5:7])
     df = df[(df['funding_round_type'] == 'seed') | (df['funding_round_type'] == 'venture')]
+
+    interaction_data = df[['company_name', 'investor_name']]
+    interaction_data.to_csv('path/to/interaction/data/file')
     return df
 
 # Loading data and creating investor investment-count dataframe
-df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
+df = pd.read_csv('Input/path/to/data/file')
+df = df_preprocessing(df)
 i_count = df.groupby('investor_name').count().sort_values('company_name', ascending=False)
 i_count = i_count.reset_index()
 
 # User Input
 u_company = raw_input("Enter your company name: ")
-u_type = raw_input("Recommendations: Enter 0 for seed investors or 1 for venture investors: ") # TODO: If something other than 0/1 entered
+u_type = raw_input("Recommendations: Enter 0 for seed investors or 1 for venture investors: ") 
 
 # Recommendations based on company description
 if u_type == '0':
@@ -37,7 +41,7 @@ if u_type == '0':
     cc['cosine_similarity'] = cc['company_category_list'].apply(lambda x: vec.similarity(cosine_sim(x)))
     cc = cc.sort_values(['cosine_similarity'], ascending=False)
 
-    mask = (cc['cosine_similarity'] > 0.7) # TODO: Edge case if there aren't 10 investors at this similarity level
+    mask = (cc['cosine_similarity'] > 0.7)
     company_list = cc[mask]
     company_list = company_list.drop_duplicates()
 
@@ -64,7 +68,7 @@ if u_type == '1':
         data_dict['company_name'].append(u_company)
         data_dict['investor_name'].append(investor)
 
-    sf = graphlab.SFrame.read_csv('/Users/brendanwong/galvanize/interaction_data/interaction_data.csv')
+    sf = graphlab.SFrame.read_csv('path/to/interaction/data/file')
     m1 = graphlab.recommender.item_similarity_recommender.create(observation_data=sf, user_id = 'company_name', item_id = 'investor_name')
 
     u_sf = graphlab.SFrame(data_dict)

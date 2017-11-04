@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 from collections import Counter, defaultdict
 import numpy as np
-from analysis_functions_similarity import *
+from recommender_functions import *
 import graphlab
 from graphlab.toolkits.cross_validation import cross_val_score, KFold
 
@@ -15,12 +15,20 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-df = pd.read_csv('/Users/brendanwong/galvanize/Capstone/crunchbase-data/investments.csv')
+df = pd.read_csv('path/to/data/set')
 df = df_preprocessing(df)
-df.head()
 mask_d = (~df['funded_year_month'].isin(['2015-07', '2015-08', '2015-09', '2015-10', '2015-11', '2015-12']))
 observation_data = df[mask_d]
-# observation_data = observation_data[(observation_data['funding_round_type'] == 'venture')]
+
+# Cross-validated Results
+interaction_data = observation_data[['company_name', 'investor_name']]
+interaction_data.to_csv('path/to/csv/file')
+sf = graphlab.SFrame.read_csv('path/to/csv/file')
+train, test = graphlab.recommender.util.random_split_by_user(sf, user_id="company_name", item_id="investor_name", max_num_users=25000)
+m1 = graphlab.recommender.item_similarity_recommender.create(observation_data=train, user_id = 'company_name', item_id = 'investor_name')
+eval_1 = m1.evaluate(test2, cutoffs=[40])
+
+# Results on Held-out data
 holdout_data = df[(df['funded_year_month'].isin(['2015-07', '2015-08', '2015-09', '2015-10', '2015-11', '2015-12']))]
 holdout_data[['company_name', 'investor_name']]
 holdout_data = holdout_data[(holdout_data['funding_round_type'] == 'venture')]
@@ -32,18 +40,10 @@ sf = graphlab.SFrame.read_csv('/Users/brendanwong/galvanize/interaction_data/int
 sf_test = graphlab.SFrame.read_csv('/Users/brendanwong/galvanize/interaction_data/test_data_final.csv')
 m2 = graphlab.recommender.item_similarity_recommender.create(observation_data=sf, user_id = 'company_name', item_id = 'investor_name')
 eval_2 = m2.evaluate(sf_test, cutoffs=[30])
-eval_2
-m2.get_current_options()
 
+# Testing Recommendations
 m2.recommend_from_interactions(['Beyond Meat'], k=30)
 m2.recommend_from_interactions(['Yozio'], k=20).print_rows(20)
 observation_data[(observation_data['investor_name'] == 'Obvious Ventures')]
 observation_data[(observation_data['company_name'] == 'Beijing Weiying Technology')]
-
 m2.recommend(['AppDynamics'])
-
-len(holdout_data)
-holdout_data.head()
-holdout_data[['company_name', 'funding_round_type']].groupby(['company_name', 'funding_round_type']).count()
-holdout_data[(holdout_data['company_name'] == 'CircleUp')]
-observation_data[(observation_data['company_name'] == 'CircleUp')]

@@ -3,7 +3,7 @@ import spacy
 import pandas as pd
 nlp = spacy.load('en_core_web_md')
 
-df = pd.read_csv('/home/ubuntu/Capstone/crunchbase-data/investments.csv')
+df = pd.read_csv('path/to/data/set')
 
 # Functions
 def df_preprocessing(df):
@@ -25,8 +25,8 @@ i_count = df.groupby('investor_name').count().sort_values('company_name', ascend
 i_count = i_count.reset_index()
 
 test_data = observation_data
-test_data.to_csv('/home/ubuntu/Capstone/interaction_data/delete2_data.csv')
-sf = graphlab.SFrame.read_csv('/home/ubuntu/Capstone/interaction_data/delete2_data.csv')
+test_data.to_csv('path/to/save/csv/file')
+sf = graphlab.SFrame.read_csv('path/to/save/csv/file')
 train, test = graphlab.recommender.util.random_split_by_user(sf, user_id="company_name", item_id="investor_name", max_num_users=25000)
 train_df = train.to_dataframe()
 train_df = train_df[(train_df['funding_round_type'] == 'seed')]
