@@ -1,10 +1,10 @@
 # Summary
-There are over 15K startup investors globally, the goal of this project was to use machine learning to provide better recommendations on which seed and venture capital investors are most likely to be interested in investing in a startup based on an item-item similarity model (item is the investor) and a user-user similarity model (user is the startup).
+There are over 15K startup investors globally, the goal of this project is to use machine learning to provide better recommendations on which seed and venture capital investors are most likely to be interested in investing in a startup based on an item-item similarity model (based on an investors past investment data) and a user-user similarity model (based on company's industry and business type).
 
 The recommendation system has been trained on over 139K past startup investment transactions from 1999-2015 from a dataset that was provided by Crunchbase under an educational license.
 (The Crunchbase team was terrific, I'd suggest reaching out to them to request access to their dataset.)
 
-This model was able to accurately predict investor-startup matches in cross-validated data at 12.8% (recall) compared to a 8.09% baseline which was recommending the largest N startup investors.
+This model was able to accurately predict investor-startup matches in cross-validated data at 12.8% (recall) which was a 58% improvement compared to the 8.09% baseline which was calculated by recommending the largest N startup investors.
 In addition to higher predictive accuracy, this models return more diverse investor recommendations other than the most well-known investors and therefore is likely to provide useful leads to startups during their fundraising process.
 
 
