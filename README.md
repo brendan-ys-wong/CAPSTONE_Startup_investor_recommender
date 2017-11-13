@@ -8,9 +8,9 @@ This project utilized graph theory, a 16-year training set of investing data, an
 # Methodology
 EDA: I plotted a network graph where the investors and startups were individual nodes and investments were directional edges connecting the nodes together. I looked at centrality measures, and found that a combination between eigenvector centrality (a proxy for how influential a node is) and closeness centrality (a proxy for the nodes information access in the network) showed a very strong positive  correlation to the percentage of an investors investments that went on to receive multiple rounds of financing.
 
-![Eigenvector + Closeness](images/eigenclose.png)
+![Eigenvector + Closeness](images/Eigenclose.png)
 
-![Eigenclose Correlation](images/eigenclose_correlation.png)
+![Eigenclose Correlation](images/Eigenclose_correlation.png)
 
 I found this signal to be incredibly telling, as it led me to conclude that there is a relationship in the data which strongly suggests that investors investment decisions are in part driven by their relationship to other investors in the network. I corroborated this finding through interviews with several venture capital firms, who identified the 'follow-the-leader' strategy where firms will base their investment decisions based on the co-investors as it de-risks the investment in their eyes.
 
