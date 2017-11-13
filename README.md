@@ -1,28 +1,35 @@
 # Summary
-There are over 15K startup investors globally, the goal of this project is to use machine learning to provide better recommendations on which seed and venture capital investors are most likely to be interested in investing in a startup based on an item-item similarity model (based on an investors past investment data) and a user-user similarity model (based on company's industry and business type).
+There are over 15K startup investors globally making the fundraising process for startups arduous and inefficient.
+The goal of this project is to use machine learning to provide targeted recommendations to startups on which investors are most likely to be interested in investing in their company.
 
-The recommendation system has been trained on over 139K past startup investment transactions from 1999-2015 from a dataset that was provided by Crunchbase under an educational license.
-(The Crunchbase team was terrific, I'd suggest reaching out to them to request access to their dataset.)
-
-This model was able to accurately predict investor-startup matches in cross-validated data at 12.8% (recall) which was a 58% improvement compared to the 8.09% baseline which was calculated by recommending the largest N startup investors.
-In addition to higher predictive accuracy, this models return more diverse investor recommendations other than the most well-known investors and therefore is likely to provide useful leads to startups during their fundraising process.
+This project utilized graph theory, a 16-year training set of investing data, and natural language processing techniques to make recommendations that achieved a 58% better recall on cross-validated data for predicting investor-startup matches than the baseline of simply recommending the N largest startup investors, which is a extremely encouraging first step in making the startup fundraising process better.
 
 
 # Methodology
-EDA: Plotted a network graph where investors and startups were individual nodes and investments were directional edges connecting the various nodes. I identified the most influential nodes based on a new centrality measure that combined eigenvector centrality (proxy for how influential a node is) and closeness centrality (proxy for the nodes access to information across the ecosystem). I found that this new centrality measure held a strong positive correlation to the percentage of an investors investments that ultimately received multiple rounds of financing. This finding led to the key insight that there is a signal in the investment data whereby investment decisions are at least partially driven by relationships between investors. This led to the approach of creating a recommendation system that could predict investors to startups.
+EDA: I plotted a network graph where the investors and startups were individual nodes and investments were directional edges connecting the nodes together. I looked at centrality measures, and found that a combination between eigenvector centrality (a proxy for how influential a node is) and closeness centrality (a proxy for the nodes information access in the network) showed a very strong positive  correlation to the percentage of an investors investments that went on to receive multiple rounds of financing.
 
-Model: Combined two different models, a item similarity model base on the interaction data of investors investing in startup companies and a user similarity model which used natural language processing to vectorize company descriptions to identify similar companies. Recommendations were either made on the basis of who current seed or venture investors were and finding the N most similar investors, or finding investors that invested in similar companies based on the company descriptions.
+![Eigenvector + Closeness](images/eigenclose.png)
 
-Cross-validation: Utilized a modified k-fold cross-validation with 5 folds, where 20% of investors for all start-up companies were moved into a test set and model was evaluated based on the ability to accurately predict those held out matches.
+![Eigenclose Correlation](images/eigenclose_correlation.png)
+
+I found this signal to be incredibly telling, as it led me to conclude that there is a relationship in the data which strongly suggests that investors investment decisions are in part driven by their relationship to other investors in the network. I corroborated this finding through interviews with several venture capital firms, who identified the 'follow-the-leader' strategy where firms will base their investment decisions based on the co-investors as it de-risks the investment in their eyes.
+
+Model: Based on my EDA findings, I decided the best way to utilize this data was to build a recommender system that could recommend to start-ups who would be the most likely to be interested in investing in their company. I first built a item-similarity model which looked at a startups current investors, then recommended investors based on their investing history using the Jaccard similarity metric.
+
+To account for startups that didn't have any preexisting investors, I built a second model which utilizing natural language processing techniques to vectorize a company's business description based on the co-occurence rates of words in a commonly crawled corpus that was used to identify similar companies. From this, I based my recommendations of investors that had shown interest in investing in that industry space.
+
+![Recommender System](images/Recommender_system.png)
+
+Cross-validation: I utilized a modified k-fold cross-validation approach with 5 folds, where 20% of investors for all start-up companies were moved into a test set and the model was evaluated based on the ability to accurately predict those held out matches. For the baseline comparison, I assumed the N largest investors were the predictions made, which is representative for how currently most startup companies identify likely investors. I used recall as the metric to optimize for, as I am most concerned if my model can correctly identify investor-startup matches. I don't believe precision or accuracy are as important, as the incremental cost of speaking with more investors is low for startups.
 
 
 # Results
-Recall is identified as the most important metric when evaluating these models. Our goal is to help a startup find a potential investor so models that can find a positive match are prioritized, and since the opportunity cost of speaking to additional investors is relatively low, we are less concerned with precision scores.
-
 The model's cross-validated results were averaged over 5-folds and our recall result was 12.8%. This result was a 58% improvement over the baseline recall of 8.1% which recommended based on the largest investors ranked by number of investments made.
 
 The user-similarity model based on NLP wasn't scored given time constraints and also because the model's recall was expected to be low given the large number of possible investors and the limited signal available in recommending investors based solely on a company's description, especially for popular industry/technology application types. However, the model was still included as I believe there is tangible value in having the additional diverse recommendations that this model provides.
 
 # Future Steps
-Future steps include incorporating personnel data for each startup/investor team including where their partners/founders went to school and what was their previous work experience.
-I believe this holds the potentially to significantly boost recall given that one of the most important features investors care about is the "quality" of the startup team.
+Future steps include incorporating personnel data for each startup/investor team including where their partners/founders went to school and what was their previous work experience, which I believe has the potentially to significant boost recall given that investors place significant emphasis on the startup's team composition.
+
+# Conclusion
+The startup fundraising process is primed for machine learning optimization given the richness of the data set. I believe this project has shown that incremental improvements are possible, and can provide tangible value to startups in the fundraising process.
